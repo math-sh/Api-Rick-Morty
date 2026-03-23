@@ -1,98 +1,133 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Rick and Morty API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This is a NestJS-based proxy API for the public [Rick and Morty API](https://rickandmortyapi.com/). It provides endpoints to fetch information about characters and episodes, with added features like in-memory caching and rate limiting.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+-   **NestJS Framework:** A progressive Node.js framework for building efficient and scalable server-side applications.
+-   **Rick and Morty API Integration:** Fetches data directly from the official Rick and Morty API.
+-   **In-Memory Caching:** Caches responses from the external API to improve performance and reduce redundant requests.
+-   **Rate Limiting:** Limits the number of requests a client can make in a given time frame.
+-   **Swagger Documentation:** Provides interactive API documentation using Swagger UI.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Project Structure
 
-## Project setup
+The project follows a standard NestJS structure:
 
-```bash
-$ npm install
+```
+.
+├── src
+│   ├── core
+│   │   ├── common/service/cacheInMemory  # In-memory cache implementation
+│   │   └── config                      # Application configuration
+│   ├── modules
+│   │   └── rick-and-morty              # Main module with controllers and services
+│   ├── app.module.ts                   # Root module of the application
+│   └── main.ts                         # Application entry point
+├── test
+│   └── app.e2e-spec.ts                 # End-to-end tests
+├── .env.example                        # Example environment variables file
+└── package.json
 ```
 
-## Compile and run the project
+## Getting Started
+
+### Prerequisites
+
+-   [Node.js](https://nodejs.org/) (v18 or higher recommended)
+-   [npm](https://www.npmjs.com/)
+
+### Installation and Running
+
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd <repository-directory>
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Set up environment variables:**
+    Create a `.env` file in the root of the project by copying the `.env.example` file.
+    ```bash
+    cp .env.example .env
+    ```
+    The `.env` file should contain the following variables:
+    ```
+    APP_PORT=3000
+    RICK_API_BASE_URL=https://rickandmortyapi.com/api
+    ```
+
+4.  **Run the application in development mode:**
+    ```bash
+    npm run start:dev
+    ```
+    The server will start on the port defined in your `.env` file (default is `3000`).
+
+## Running with Docker
+
+You can also run the application using Docker.
+
+1.  **Build the Docker image:**
+    ```bash
+    docker build -t rick-and-morty-api .
+    ```
+
+2.  **Run the Docker container:**
+    ```bash
+    docker run -d -p 3000:3000 \
+      --name rick-and-morty-container \
+      -e "APP_PORT=3000" \
+      -e "RICK_API_BASE_URL=https://rickandmortyapi.com/api" \
+      rick-and-morty-api
+    ```
+    The application will be available at `http://localhost:3000`.
+
+## API Endpoints
+
+
+Once the application is running, you can access the interactive API documentation (Swagger UI) at `http://localhost:3000/api`.
+
+Here are the available endpoints:
+
+### Episodes
+
+-   **GET `/rick-and-morty/all-episodes`**
+    -   **Description:** Retrieves a list of all episodes.
+    -   **Response:** An array of episode objects.
+
+-   **GET `/rick-and-morty/episode/:idEpisode`**
+    -   **Description:** Retrieves details for a specific episode by its ID.
+    -   **Parameters:** `idEpisode` (number) - The ID of the episode.
+    -   **Response:** An episode object.
+
+-   **GET `/rick-and-morty/episode/with-characters/:id`**
+    -   **Description:** Retrieves details for a specific episode, including a full list of all characters that appeared in it.
+    -   **Parameters:** `id` (number) - The ID of the episode.
+    -   **Response:** An object containing episode details and an array of character objects.
+
+### Characters
+
+-   **GET `/rick-and-morty/all-characters`**
+    -   **Description:** Retrieves a list of all characters.
+    -   **Response:** An array of character objects.
+
+-   **GET `/rick-and-morty/character/details/:id`**
+    -   **Description:** Retrieves details for a specific character by their ID.
+    -   **Parameters:** `id` (number) - The ID of the character.
+    -   **Response:** A character object with detailed information.
+
+## Running Tests
+
+To run the test suite, use the following command:
 
 ```bash
-# development
-$ npm run start
+# Unit tests
+npm run test
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# End-to-end tests
+npm run test:e2e
 ```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).

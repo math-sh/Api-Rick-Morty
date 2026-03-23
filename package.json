@@ -9,7 +9,7 @@
     "**/*.ts": [
       "eslint --fix",
       "prettier --write",
-      "npm run test -- --findRelatedTests --bail"
+      "npm run test -- --findRelatedTests --bail --passWithNoTests"
     ]
   },
   "scripts": {
